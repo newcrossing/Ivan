@@ -1,2 +1,2 @@
-g = int(input())
-print((g - 32) * 5 / 9)
+b = int(input())
+print((b - 32) * 5 / 9)
