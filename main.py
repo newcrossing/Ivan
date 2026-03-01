@@ -14,6 +14,8 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
+player_img = pygame.image.load('src/hero.png')
+
 # Создаем игру и окно
 pygame.init()
 pygame.mixer.init()
@@ -26,8 +28,9 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((30, 30))
-        self.image.fill(BLACK)
+        self.image = pygame.Surface((90, 90))
+        #self.image.fill(BLACK)
+        self.image = player_img
         self.rect = self.image.get_rect()
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
@@ -37,6 +40,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.speedx = 0
         self.speedy = 0
+
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LEFT]:
             self.speedx = -8
@@ -56,20 +60,26 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = 0
 
     def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.top)
+        bullet = Bullet(self.rect.centerx, self.rect.centery)
         all_sprites.add(bullet)
         bullets_spites.add(bullet)
 
 class Bullet(pygame.sprite.Sprite):
+    speedy = -5
+    sizeBullet = (10,10)
+
+    # Передаем для инициализации координаты места старта x и y
+
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10, 20))
-        self.image.fill(YELLOW)
+        self.image = pygame.Surface((self.sizeBullet))
+        self.image.fill(RED)
+
         self.rect = self.image.get_rect()
         self.rect.bottom = y
         self.rect.centerx = x
-        self.speedy = -10
-        self.speedx =  random.randrange(-10, 10)
+
+        self.speedx =  random.randrange(-5, 5)
 
     def update(self):
         self.rect.y += self.speedy
