@@ -14,8 +14,6 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
-player_img = pygame.image.load('src/hero.png')
-ball_img = pygame.image.load('src/ball.png')
 
 # Создаем игру и окно
 pygame.init()
@@ -30,8 +28,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((90, 90))
-        #self.image.fill(BLACK)
-        self.image = player_img
+        self.image = pygame.image.load('src/hero.png')
         self.rect = self.image.get_rect()
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
@@ -66,17 +63,15 @@ class Player(pygame.sprite.Sprite):
         bullets_spites.add(bullet)
 
 class Bullet(pygame.sprite.Sprite):
+    img = pygame.image.load('src/ball.png')
     speedy = -5
     sizeBullet = (9,9)
 
     # Передаем для инициализации координаты места старта x и y
-
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((self.sizeBullet))
-        # self.image.fill(RED)
-        self.image = pygame.transform.scale(ball_img, (self.sizeBullet))
-        # self.image = ball_img
+        self.image = pygame.transform.scale(self.img, (self.sizeBullet))
 
         self.rect = self.image.get_rect()
         self.rect.bottom = y
@@ -112,6 +107,8 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.shoot()
+        elif  event.type == pygame.MOUSEBUTTONUP:
+            player.shoot()
     # Обновление
     all_sprites.update()
 
