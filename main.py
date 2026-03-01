@@ -15,6 +15,7 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 player_img = pygame.image.load('src/hero.png')
+ball_img = pygame.image.load('src/ball.png')
 
 # Создаем игру и окно
 pygame.init()
@@ -66,14 +67,16 @@ class Player(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
     speedy = -5
-    sizeBullet = (10,10)
+    sizeBullet = (9,9)
 
     # Передаем для инициализации координаты места старта x и y
 
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((self.sizeBullet))
-        self.image.fill(RED)
+        # self.image.fill(RED)
+        self.image = pygame.transform.scale(ball_img, (self.sizeBullet))
+        # self.image = ball_img
 
         self.rect = self.image.get_rect()
         self.rect.bottom = y
