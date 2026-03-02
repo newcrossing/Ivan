@@ -67,6 +67,7 @@ class Player(pygame.sprite.Sprite):
 
 
 class Weapon(pygame.sprite.Sprite):
+    
     img = pygame.image.load('src/ball.png')
     sizeBullet = (9, 9)
     ammo = 5  # боезапас
