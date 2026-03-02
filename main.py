@@ -60,6 +60,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = 0
 
     def shoot(self, deg):
+        print(f"Боезаспас: {Weapon.ammo} ")
         if Weapon.ammo > 0:
             bullet = Weapon(self.rect.centerx, self.rect.centery, deg)
             all_sprites.add(bullet)
@@ -107,7 +108,7 @@ class Weapon(pygame.sprite.Sprite):
         self.rect.x = self.floatX
 
         # убить, если он заходит за верхнюю часть экрана
-        if self.rect.bottom < 0:
+        if self.rect.bottom < 0 or self.rect.right < 0 or self.rect.left > WIDTH or self.rect.top > HEIGHT:
             Weapon.ammo += 1
             self.kill()
 
