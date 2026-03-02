@@ -5,10 +5,10 @@ import random
 
 from pygame.examples.midi import NullKey
 
-WIDTH = 480
-HEIGHT = 600
+WIDTH = 800
+HEIGHT = 800
 FPS = 60
-
+ammo2 = 5
 # Задаем цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -51,7 +51,6 @@ class Player(pygame.sprite.Sprite):
         if keystate[pygame.K_DOWN]:
             self.speedy = 8
 
-
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
@@ -60,20 +59,20 @@ class Player(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.rect.left = 0
 
-    def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.centery)
-        all_sprites.add(bullet)
-        bullets_spites.add(bullet)
+    def shoot(self, deg):
+        if Weapon.ammo > 0:
+            bullet = Weapon(self.rect.centerx, self.rect.centery, deg)
+            all_sprites.add(bullet)
+            bullets_spites.add(bullet)
 
 
-class Bullet(pygame.sprite.Sprite):
+class Weapon(pygame.sprite.Sprite):
     img = pygame.image.load('src/ball.png')
-    speedy = -5
     sizeBullet = (9, 9)
+    ammo = 5  # боезапас
 
     # Передаем для инициализации координаты места старта x и y
-
-    def __init__(self, x, y, deg=20):
+    def __init__(self, x, y, deg=0):
         """
         Инициализирует полет снаряда.
 
@@ -81,9 +80,10 @@ class Bullet(pygame.sprite.Sprite):
         :param y: координаты старта y
         :param deg: угол полета санряда в градусах, 0 - вверх, далее по часовой стрелке
         """
+
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((self.sizeBullet))
-        self.image = pygame.transform.scale(self.img, (self.sizeBullet))
+        self.image = pygame.Surface(self.sizeBullet)
+        self.image = pygame.transform.scale(self.img, self.sizeBullet)
 
         self.rect = self.image.get_rect()
         self.rect.bottom = y
@@ -93,10 +93,10 @@ class Bullet(pygame.sprite.Sprite):
         self.floatX = x  # реальные координаты в float x
         self.floatY = y  # реальные координаты в float y
 
-        self.speed = random.randrange(1, 1000) / 100
+        self.speed = 5  # скорость полета санаряда
 
+        Weapon.ammo -= 1
 
-        print(f"cos= {math.cos(math.radians(self.deg))}, sin= {math.sin(math.radians(self.deg))}")
 
     def update(self):
         self.floatY -= math.cos(math.radians(self.deg)) * self.speed
@@ -107,6 +107,7 @@ class Bullet(pygame.sprite.Sprite):
 
         # убить, если он заходит за верхнюю часть экрана
         if self.rect.bottom < 0:
+            Weapon.ammo += 1
             self.kill()
 
 
@@ -132,7 +133,15 @@ while running:
             if event.key == pygame.K_SPACE:
                 player.shoot()
         elif event.type == pygame.MOUSEBUTTONUP:
-            player.shoot()
+            if event.button == pygame.BUTTON_LEFT:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                # ищу угол между точками
+                dy = player.rect.centerx - mouse_x
+                dx = player.rect.centery - mouse_y
+                rads = math.atan2(-dy, dx)
+                degs = math.degrees(rads)
+
+                player.shoot(degs)
     # Обновление
     all_sprites.update()
 
