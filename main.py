@@ -76,6 +76,52 @@ class Player(pygame.sprite.Sprite):
             bullets_spites.add(bullet)
 
 
+class Weapon(pygame.sprite.Sprite):
+    
+    img = pygame.image.load('src/ball.png')
+    sizeBullet = (9, 9)
+    ammo = 5  # боезапас
+
+    # Передаем для инициализации координаты места старта x и y
+    def __init__(self, x, y, deg=0):
+        """
+        Инициализирует полет снаряда.
+
+        :param x: координаты старта x
+        :param y: координаты старта y
+        :param deg: угол полета санряда в градусах, 0 - вверх, далее по часовой стрелке
+        """
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface(self.sizeBullet)
+        self.image = pygame.transform.scale(self.img, self.sizeBullet)
+
+        self.rect = self.image.get_rect()
+        self.rect.bottom = y
+        self.rect.centerx = x
+        self.deg = deg
+
+        self.floatX = x  # реальные координаты в float x
+        self.floatY = y  # реальные координаты в float y
+
+        self.speed = 5  # скорость полета санаряда
+
+        Weapon.ammo -= 1
+
+
+    def update(self):
+        self.floatY -= math.cos(math.radians(self.deg)) * self.speed
+        self.floatX += math.sin(math.radians(self.deg)) * self.speed
+
+        self.rect.y = self.floatY
+        self.rect.x = self.floatX
+
+        # убить, если он заходит за верхнюю часть экрана
+        if self.rect.bottom < 0:
+            Weapon.ammo += 1
+            self.kill()
+
+
 # Создаю спрайты 2 штуки
 all_sprites = pygame.sprite.Group()
 bullets_spites = pygame.sprite.Group()
