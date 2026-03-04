@@ -6,6 +6,7 @@ from constants import *
 from text import Text
 from weapon import *
 from text import *
+from box import *
 
 # Создаем игру и окно
 pygame.init()
@@ -19,16 +20,6 @@ text = Text()
 text.setAmmoAll(Weapon.ammoAll)
 text.setAmmo(Weapon.ammo)
 
-class Gun(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50, 50))
-        self.image = pygame.image.load('src/wepon.png')
-        self.rect = self.image.get_rect()
-        self.rect.centerx = 100
-        self.rect.bottom = 100
-
-
 
 class Player(pygame.sprite.Sprite):
 
@@ -37,8 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface((90, 90))
         self.image = pygame.image.load('src/hero.png')
         self.rect = self.image.get_rect()
-        self.rect.centerx = WIDTH / 2
-        self.rect.bottom = HEIGHT - 10
+        self.rect.centerx = int(WIDTH / 2)
+        self.rect.bottom = int(HEIGHT - 10)
         self.speedx = 0
         self.speedy = 0
 
@@ -71,31 +62,36 @@ class Player(pygame.sprite.Sprite):
         if Weapon.ammo > 0:
             bullet = Weapon(self.rect.centerx, self.rect.centery, deg)
 
+            sprites_all.add(bullet)
+            sprites_weapon.add(bullet)
 
-            all_sprites.add(bullet)
-            bullets_spites.add(bullet)
+    def get_deg(self, x2, y2):
+        """
+        Получает унол между двумя точками в градусах
+
+        """
+        dy = self.rect.centerx - x2
+        dx = self.rect.centery - y2
+        rads = math.atan2(-dy, dx)
+        return math.degrees(rads)
 
 
-
-
-
-# Создаю спрайты 2 штуки
-all_sprites = pygame.sprite.Group()
-bullets_spites = pygame.sprite.Group()
-gun_spites = pygame.sprite.Group()
-player_spites = pygame.sprite.Group()
+# Создаю спрайты группы
+sprites_all = pygame.sprite.Group()
+sprites_weapon = pygame.sprite.Group()
+sprites_box = pygame.sprite.Group()
+sprites_player = pygame.sprite.Group()
 
 # Создаю игрока
 player = Player()
-gun = Gun()
+box = Box()
 
 # Добавляю игрока в спрайт
-all_sprites.add(player)
-player_spites.add(player)
+sprites_all.add(player)
+sprites_player.add(player)
 
-all_sprites.add(gun)
-gun_spites.add(gun)
-
+sprites_all.add(box)
+sprites_box.add(box)
 
 running = True
 
@@ -104,7 +100,7 @@ while running:
     clock.tick(FPS)
 
     for event in pygame.event.get():
-        # проверка для закрытия окна
+
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
@@ -115,23 +111,18 @@ while running:
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == pygame.BUTTON_LEFT:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                # ищу угол между точками
-                dy = player.rect.centerx - mouse_x
-                dx = player.rect.centery - mouse_y
-                rads = math.atan2(-dy, dx)
-                degs = math.degrees(rads)
-                player.shoot(degs)
+                player.shoot(player.get_deg(mouse_x, mouse_y))
 
     # Обновление
-    all_sprites.update()
+    sprites_all.update()
 
-    hits = pygame.sprite.spritecollide(player, gun_spites, False)
-    if hits:
-        print(hits)
+    hits = pygame.sprite.spritecollide(player, sprites_box, False)
+    # if hits:
+    #     print(hits)
 
     # Рендеринг
     screen.fill(WHITE)
-    all_sprites.draw(screen)
+    sprites_all.draw(screen)
 
     text.setAmmo(Weapon.ammo)
     text.setAmmoAll(Weapon.ammoAll)

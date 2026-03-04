@@ -22,7 +22,8 @@ class Weapon(pygame.sprite.Sprite):
         :param y: координаты старта y
         :param deg: угол полета санряда в градусах, 0 - вверх, далее по часовой стрелке
         """
-
+        sound_shot = pygame.mixer.Sound('src/music/shot.wav')
+        sound_shot.play()
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface(self.sizeBullet)
         self.image = pygame.transform.scale(self.img, self.sizeBullet)
@@ -57,9 +58,12 @@ class Weapon(pygame.sprite.Sprite):
         """
         Перезарядка оружия
 
-        :rtype: None
         """
-        diff = Weapon.AMMO_E - Weapon.ammo # сколько патронов не хватает в магине сейчас
-
+        diff = Weapon.AMMO_E - Weapon.ammo  # сколько патронов не хватает в магине сейчас
+        # TODO: Сделать ограничение, сейчас патроны могут уйти  в минус при перезарядке
         Weapon.ammoAll -= 5
         Weapon.ammo = 5
+        sound_shot = pygame.mixer.Sound('src/music/reload.wav')
+        sound_shot.play()
+
+
