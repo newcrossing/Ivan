@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((90, 90))
         self.image = pygame.image.load('src/hero.png')
+        # self.image = pygame.transform.rotate(self.image, 45)
         self.rect = self.image.get_rect()
         self.rect.centerx = int(WIDTH / 2)
         self.rect.bottom = int(HEIGHT - 10)
@@ -61,9 +62,10 @@ class Player(pygame.sprite.Sprite):
     def shoot(self, deg):
         if Weapon.ammo > 0:
             bullet = Weapon(self.rect.centerx, self.rect.centery, deg)
-
             sprites_all.add(bullet)
             sprites_weapon.add(bullet)
+        else:
+           Weapon.shot_fail()
 
     def get_deg(self, x2, y2):
         """

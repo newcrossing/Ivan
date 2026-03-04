@@ -66,4 +66,9 @@ class Weapon(pygame.sprite.Sprite):
         sound_shot = pygame.mixer.Sound('src/music/reload.wav')
         sound_shot.play()
 
+    @staticmethod
+    def shot_fail():
+        sound_shot = pygame.mixer.Sound('src/music/shot_fail.wav')
+        sound_shot.play()
+
 

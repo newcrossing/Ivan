@@ -1,8 +1,5 @@
-import math
-
 import pygame
-import random
-from constants import *
+
 
 class Box(pygame.sprite.Sprite):
     def __init__(self):
